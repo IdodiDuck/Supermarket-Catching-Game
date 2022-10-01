@@ -20,3 +20,4 @@ while run_program:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run_program = False
+            print('Window closed by the user')
