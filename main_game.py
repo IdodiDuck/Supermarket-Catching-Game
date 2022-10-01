@@ -7,6 +7,16 @@ import pygame
 #Initialize the PyGame library 
 pygame.init()
 
+WINDOW_HEIGHT = 800
+WINDOW_WIDTH = 600
+
 #Screen creation including sizes
-screen = pygame.display.set_mode((800, 600))
-print(f'PyGame is running')
+screen = pygame.display.set_mode((WINDOW_HEIGHT, WINDOW_WIDTH))
+pygame.display.set_caption('Supermarket Game')
+
+#Program running loop
+run_program = True
+while run_program:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            run_program = False
