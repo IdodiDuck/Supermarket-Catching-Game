@@ -2,7 +2,7 @@
 
 ## **Welcome to my first Python game! __GameNameHere__**
 
-```Still in```
+```Still in progress..```
 ---
 ## **What is this Repository about?:**
 PyGameDescriptionHere

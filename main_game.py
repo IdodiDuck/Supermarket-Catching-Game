@@ -6,10 +6,11 @@ import random
 #TODO --> Set up the pygame. Start to set up classes for each object and study this library's basics and advanced attributes and subjects.
 
 #Initialize the PyGame library 
+
 pygame.init()
 
-WINDOW_HEIGHT = 500
-WINDOW_WIDTH = 500
+WINDOW_HEIGHT = 750
+WINDOW_WIDTH = 630
 
 #Screen creation including sizes
 screen = pygame.display.set_mode((WINDOW_HEIGHT, WINDOW_WIDTH))
@@ -21,10 +22,18 @@ x = 50
 y = 425
 width = 40
 height = 60
-vel = 5
+vel = 20
 
 isJump = False
 jumpCount = 10
+
+background = pygame.image.load('Game_SuperMarket_Banner.png')
+
+#Function which is Displaying the background
+
+def redrawGameWindow():
+    screen.blit(background, (0, 0)) #Draws the background
+    pygame.display.update() #Updates background and displays the background I downloaded.
 
 #Program running loop
 run_program = True
@@ -41,14 +50,14 @@ while run_program:
     if KEYS[pygame.K_LEFT] and x > vel:
         x -= vel
 
-    if KEYS[pygame.K_RIGHT] and x < 500 -  width - vel:
+    if KEYS[pygame.K_RIGHT] and x < 750 -  width - vel:
         x += vel
         
     if not (isJump):
         if KEYS[pygame.K_UP] and y > vel:
             y -= vel
 
-        if KEYS[pygame.K_DOWN] and y < 500 - height - vel:
+        if KEYS[pygame.K_DOWN] and y < 630 - height - vel:
             y += vel
 
         if KEYS[pygame.K_SPACE]:
@@ -65,7 +74,7 @@ while run_program:
             isJump = False
             jumpCount = 10
 
-    screen.fill((0, 0, 0))
+    redrawGameWindow()    
     pygame.draw.rect(screen, (random.randint(1, 255), random.randint(1, 255), random.randint(1, 255)), (x, y, width, height))
     pygame.display.update()
 
