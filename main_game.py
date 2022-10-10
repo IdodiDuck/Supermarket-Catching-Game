@@ -18,14 +18,15 @@ pygame.display.set_caption('Supermarket Game')
 
 # Characteristics
 
-x = 50
-y = 425
-width = 40
-height = 60
-vel = 20
-
-isJump = False
-jumpCount = 10
+class player(object):
+    def __init__(self, x, y, width, height):
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
+        self.vel = 20
+        self.isJump = False
+        self.jumpCount = 10
 
 background = pygame.image.load('Game_SuperMarket_Banner.png')
 
@@ -35,10 +36,12 @@ def redrawGameWindow():
     screen.blit(background, (0, 0)) #Draws the background
     pygame.display.update() #Updates background and displays the background I downloaded.
 
-#Program running loop
 run_program = True
+clock = pygame.time.Clock()
+obj = player(50, 50, 50, 50)
 
 while run_program:
+    clock.tick(40)
     pygame.time.delay(100)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -47,35 +50,35 @@ while run_program:
 
     KEYS = pygame.key.get_pressed()
 
-    if KEYS[pygame.K_LEFT] and x > vel:
-        x -= vel
+    if KEYS[pygame.K_LEFT] and obj.x > obj.vel:
+        obj.x -= obj.vel
 
-    if KEYS[pygame.K_RIGHT] and x < 750 -  width - vel:
-        x += vel
+    if KEYS[pygame.K_RIGHT] and obj.x < 750 - obj.width - obj.vel:
+        obj.x += obj.vel
         
-    if not (isJump):
-        if KEYS[pygame.K_UP] and y > vel:
-            y -= vel
+    if not (obj.isJump):
+        if KEYS[pygame.K_UP] and obj.y > obj.vel:
+            obj.y -= obj.vel
 
-        if KEYS[pygame.K_DOWN] and y < 630 - height - vel:
-            y += vel
+        if KEYS[pygame.K_DOWN] and obj.y < 150 - obj.height - obj.vel:
+            obj.y += obj.vel
 
         if KEYS[pygame.K_SPACE]:
-            isJump = True
+            obj.isJump = True
     else:
-        if jumpCount >= -10:
+        if obj.jumpCount >= -10:
             neg = 1
-            if jumpCount < 0:
+            if obj.jumpCount < 0:
                 neg = -1
-            y -= (jumpCount ** 2) * 0.5 * neg
-            jumpCount -= 1
+            obj.y -= (obj.jumpCount ** 2) * 0.5 * neg
+            obj.jumpCount -= 1
 
         else:
-            isJump = False
-            jumpCount = 10
+            obj.isJump = False
+            obj.jumpCount = 10
 
     redrawGameWindow()    
-    pygame.draw.rect(screen, (random.randint(1, 255), random.randint(1, 255), random.randint(1, 255)), (x, y, width, height))
+    pygame.draw.rect(screen, (random.randint(1, 255), random.randint(1, 255), random.randint(1, 255)), (obj.x, obj.y, obj.width, obj.height))
     pygame.display.update()
 
 pygame.quit()
