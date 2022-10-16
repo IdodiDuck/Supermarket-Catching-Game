@@ -1,5 +1,4 @@
 import pygame
-import random
 
 #Missions:
 
@@ -16,9 +15,12 @@ WINDOW_WIDTH = 630
 screen = pygame.display.set_mode((WINDOW_HEIGHT, WINDOW_WIDTH))
 pygame.display.set_caption('Supermarket Game')
 
+walkright_pic = pygame.image.load('ShoppingCartRight.png')
+walkleft_pic = pygame.image.load('ShoppingCartLeft.png')
+
 # Characteristics
 
-class player(object):
+class cart(object):
     def __init__(self, x, y, width, height):
         self.x = x
         self.y = y
@@ -33,16 +35,37 @@ background = pygame.image.load('Game_SuperMarket_Banner.png')
 #Function which is Displaying the background
 
 def redrawGameWindow():
+    global walkCount
+
     screen.blit(background, (0, 0)) #Draws the background
     pygame.display.update() #Updates background and displays the background I downloaded.
 
+    if walkCount + 1 >= 27:
+        walkCount = 0
+
+    if left:
+        screen.blit(walkleft_pic, (maincart.x, maincart.y))
+        walkCount += 1
+
+    elif right:
+        screen.blit(walkright_pic, (maincart.x, maincart.y))
+    
+    else:
+        screen.blit(walkright_pic, (maincart.x, maincart.y))
+
+
 run_program = True
 clock = pygame.time.Clock()
-obj = player(50, 50, 50, 50)
+maincart = cart(50, WINDOW_HEIGHT - walkleft_pic.get_height() -130, 50, 50)
 
+walkCount = 0 
+left, right = False, False
+
+#Main prorgam loop
 while run_program:
     clock.tick(40)
     pygame.time.delay(100)
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run_program = False
@@ -50,35 +73,23 @@ while run_program:
 
     KEYS = pygame.key.get_pressed()
 
-    if KEYS[pygame.K_LEFT] and obj.x > obj.vel:
-        obj.x -= obj.vel
+    if KEYS[pygame.K_LEFT] and maincart.x > maincart.vel:
+        maincart.x -= maincart.vel
+        left = True
+        right = False
 
-    if KEYS[pygame.K_RIGHT] and obj.x < 750 - obj.width - obj.vel:
-        obj.x += obj.vel
+    elif KEYS[pygame.K_RIGHT] and maincart.x < 570 - maincart.width - maincart.vel:
+        maincart.x += maincart.vel
+        left = False
+        right = True
+
+    # else:
+    #     right = False
+    #     left = False
+    #     walkCount = 0
         
-    if not (obj.isJump):
-        if KEYS[pygame.K_UP] and obj.y > obj.vel:
-            obj.y -= obj.vel
+    redrawGameWindow()  
 
-        if KEYS[pygame.K_DOWN] and obj.y < 150 - obj.height - obj.vel:
-            obj.y += obj.vel
-
-        if KEYS[pygame.K_SPACE]:
-            obj.isJump = True
-    else:
-        if obj.jumpCount >= -10:
-            neg = 1
-            if obj.jumpCount < 0:
-                neg = -1
-            obj.y -= (obj.jumpCount ** 2) * 0.5 * neg
-            obj.jumpCount -= 1
-
-        else:
-            obj.isJump = False
-            obj.jumpCount = 10
-
-    redrawGameWindow()    
-    pygame.draw.rect(screen, (random.randint(1, 255), random.randint(1, 255), random.randint(1, 255)), (obj.x, obj.y, obj.width, obj.height))
     pygame.display.update()
-
+    
 pygame.quit()
