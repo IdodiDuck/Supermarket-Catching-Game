@@ -16,8 +16,8 @@ screen = pygame.display.set_mode((WINDOW_HEIGHT, WINDOW_WIDTH))
 pygame.display.set_caption('Supermarket Game')
 
 walkright_pic = pygame.image.load('ShoppingCartRight.png')
-walkleft_pic = pygame.image.load('ShoppingCartLeft.png')
-
+walkleft_pic = pygame.image.load('ShoppingCartLeft.png') #D:\Ido.Files\Documents\GitHub\PyGame-Project\Shopping Cart Animations
+ 
 # Characteristics
 
 class cart(object):
