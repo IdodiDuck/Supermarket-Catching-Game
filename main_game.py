@@ -1,4 +1,4 @@
-import pygame, random
+import pygame, random, time
 
 #Missions:
 
@@ -17,6 +17,7 @@ WINDOW_WIDTH = 630
 #Screen creation including sizes
 screen = pygame.display.set_mode((WINDOW_HEIGHT, WINDOW_WIDTH))
 pygame.display.set_caption('Supermarket Game')
+background = pygame.image.load('Game_SuperMarket_Banner.png')
 
 score = 0
 level = 1
@@ -27,28 +28,88 @@ walkleft_pic = pygame.image.load('ShoppingCartLeft.png')
 
 # Classes and Attributes of all the objects
 class cart(object):
-    def __init__(self, x, y, width, height):
+    '''
+    Main Cart, the object that the user controls. The cart should catch the falling food items before they reach the floor
+    Cart inherits from the class object
+    '''
+    def __init__(self, x, y, width, height): #Attributes of the cart
         self.x = x
         self.y = y
         self.width = width
         self.height = height
         self.vel = 20
-        self.isJump = False
-        self.jumpCount = 10
 
-background = pygame.image.load('Game_SuperMarket_Banner.png')
+class bread(object):
+    pic = pygame.image.load('Bread_Obj.png')
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+        self.pts = 5
+        
+class drinks(object):
+    pic = pygame.image.load('Drinks_Obj.png')
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+        self.pts = 10
 
-#Function which is Displaying the background
+class eggs(object):
+    pic = pygame.image.load('Eggs_Obj.png')
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+        self.pts = 5
+
+class milk(object):
+    pic = pygame.image.load('Milk_Obj.png')
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+        self.pts = 5
+
+class veg(object):
+    pic = pygame.image.load('Vegetables_Obj.png')
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+        self.pts = 5
+
+class meat(object):
+    pic = pygame.image.load('Meat_Obj.png')
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+        self.pts = 10
+
+class goldencandy(object):
+    pic = pygame.image.load('GoldenCandy_Obj.png')
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+        self.pts = 100
+
+food_tup = (bread, drinks, eggs, meat, veg, milk)
+
+#Function which is drawing the images in the game and updates the display in every frame
 def redrawGameWindow():
+    current_food = random.choice(food_tup)
+    current_food = current_food(random.randint(0, WINDOW_WIDTH - 5), current_food.pic.get_height())
     global walkCount, level, score
-    
+
     screen.blit(background, (0, 0)) #Draws the background
     leveltextTBD = leveltext.render(f'Level: {level}', 1, (0, 0, 0))
     scoretextTBD = scoretext.render(f'Score: {score}', 1, (0, 0, 0))
 
-    screen.blit(leveltextTBD, (2, 0))
+    screen.blit(leveltextTBD, (2, 0)) #Drawing both texts of Level and Score
     screen.blit(scoretextTBD, (2, 68))
-    pygame.display.update() #Updates background and displays the background I downloaded.
+
+    screen.blit(current_food.pic, (current_food.x, current_food.y))
+    time.sleep(5)
+    current_food.y += 10
+
+    if current_food.y > WINDOW_HEIGHT:
+        pygame.display.update() #Updates background and displays the background I downloaded.
+
 
     if left:
         screen.blit(walkleft_pic, (maincart.x, maincart.y))
@@ -59,7 +120,6 @@ def redrawGameWindow():
     
     else:
         screen.blit(walkright_pic, (maincart.x, maincart.y))
-
 
 run_program = True
 clock = pygame.time.Clock()
@@ -89,7 +149,7 @@ while run_program:
         maincart.x += maincart.vel
         left = False
         right = True
-   
+
     redrawGameWindow()
 
     pygame.display.update()
