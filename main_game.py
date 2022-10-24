@@ -1,8 +1,4 @@
-import pygame, random, time
-
-#Missions:
-
-#TODO --> Set up the pygame. Start to set up classes for each object and study this library's basics and advanced attributes and subjects.
+import pygame, random
 
 #Initialize the PyGame library and text
 pygame.init()
@@ -90,10 +86,11 @@ class goldencandy(object):
 
 food_tup = (bread, drinks, eggs, meat, veg, milk)
 
+current_food = random.choice(food_tup)
+current_food = current_food(random.randint(1, WINDOW_WIDTH), current_food.pic.get_height())
+
 #Function which is drawing the images in the game and updates the display in every frame
 def redrawGameWindow():
-    current_food = random.choice(food_tup)
-    current_food = current_food(random.randint(0, WINDOW_WIDTH - 5), current_food.pic.get_height())
     global walkCount, level, score
 
     screen.blit(background, (0, 0)) #Draws the background
@@ -104,13 +101,13 @@ def redrawGameWindow():
     screen.blit(scoretextTBD, (2, 68))
 
     screen.blit(current_food.pic, (current_food.x, current_food.y))
-    time.sleep(5)
-    current_food.y += 10
 
-    if current_food.y > WINDOW_HEIGHT:
-        pygame.display.update() #Updates background and displays the background I downloaded.
+    if current_food.y == maincart.y:
+        current_food.y = maincart.y
 
-
+    else:
+        current_food.y += 4
+        
     if left:
         screen.blit(walkleft_pic, (maincart.x, maincart.y))
         walkCount += 1
@@ -120,6 +117,8 @@ def redrawGameWindow():
     
     else:
         screen.blit(walkright_pic, (maincart.x, maincart.y))
+
+    pygame.display.update() #Updates background and displays the background I downloaded.
 
 run_program = True
 clock = pygame.time.Clock()
@@ -150,6 +149,7 @@ while run_program:
         left = False
         right = True
 
+    
     redrawGameWindow()
 
     pygame.display.update()
