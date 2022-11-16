@@ -37,61 +37,89 @@ class cart(object):
 
 class bread(object):
     pic = pygame.image.load('Bread_Obj.png')
-    def __init__(self, x, y):
+    def __init__(self, x, y, respawn):
         self.x = x
         self.y = y
+        self.respawn = respawn
         self.pts = 5
+    
+    def draw(self):
+        screen.blit(bread.pic, (self.x, self.y))
         
 class drinks(object):
     pic = pygame.image.load('Drinks_Obj.png')
-    def __init__(self, x, y):
+    def __init__(self, x, y, respawn):
         self.x = x
         self.y = y
+        self.respawn = respawn
         self.pts = 10
+
+    def draw(self):
+        screen.blit(drinks.pic, (self.x, self.y))
 
 class eggs(object):
     pic = pygame.image.load('Eggs_Obj.png')
-    def __init__(self, x, y):
+    def __init__(self, x, y, respawn):
         self.x = x
         self.y = y
+        self.respawn = respawn
         self.pts = 5
+
+    def draw(self):
+        screen.blit(eggs.pic, (self.x, self.y))
 
 class milk(object):
     pic = pygame.image.load('Milk_Obj.png')
-    def __init__(self, x, y):
+    def __init__(self, x, y, respawn):
         self.x = x
         self.y = y
+        self.respawn = respawn
         self.pts = 5
+
+    def draw(self):
+        screen.blit(milk.pic, (self.x, self.y))
 
 class veg(object):
     pic = pygame.image.load('Vegetables_Obj.png')
-    def __init__(self, x, y):
+    def __init__(self, x, y, respawn):
         self.x = x
         self.y = y
+        self.respawn = respawn
         self.pts = 5
+
+    def draw(self):
+        screen.blit(veg.pic, (self.x, self.y))
 
 class meat(object):
     pic = pygame.image.load('Meat_Obj.png')
-    def __init__(self, x, y):
+    def __init__(self, x, y, respawn):
         self.x = x
         self.y = y
+        self.respawn = respawn
         self.pts = 10
+
+    def draw(self):
+        screen.blit(meat.pic, (self.x, self.y))
 
 class goldencandy(object):
     pic = pygame.image.load('GoldenCandy_Obj.png')
-    def __init__(self, x, y):
+    def __init__(self, x, y, respawn):
         self.x = x
         self.y = y
+        self.respawn = respawn
         self.pts = 100
-
-food_tup = (bread, drinks, eggs, meat, veg, milk)
+    
+    def draw(self):
+        screen.blit(goldencandy.pic, (self.x, self.y))
+        
+food_tup = (bread, drinks, eggs, meat, veg, milk, goldencandy)
 
 current_food = random.choice(food_tup)
-current_food = current_food(random.randint(1, WINDOW_WIDTH), current_food.pic.get_height())
+current_food_instance = current_food(random.randint(1, WINDOW_WIDTH), current_food.pic.get_height(), False)
 
 #Function which is drawing the images in the game and updates the display in every frame
 def redrawGameWindow():
-    global walkCount, level, score
+    global level, score
 
     screen.blit(background, (0, 0)) #Draws the background
     leveltextTBD = leveltext.render(f'Level: {level}', 1, (0, 0, 0))
@@ -100,17 +128,18 @@ def redrawGameWindow():
     screen.blit(leveltextTBD, (2, 0)) #Drawing both texts of Level and Score
     screen.blit(scoretextTBD, (2, 68))
 
-    screen.blit(current_food.pic, (current_food.x, current_food.y))
+    if current_food_instance.respawn == False:
+        current_food_instance.draw()
 
-    if current_food.y == maincart.y:
-        current_food.y = maincart.y
+    if current_food_instance.y == maincart.y:
+        current_food_instance.y = maincart.y
+        current_food_instance.respawn = True
 
     else:
-        current_food.y += 4
+        current_food_instance.y += 4
         
     if left:
         screen.blit(walkleft_pic, (maincart.x, maincart.y))
-        walkCount += 1
 
     elif right:
         screen.blit(walkright_pic, (maincart.x, maincart.y))
@@ -122,9 +151,8 @@ def redrawGameWindow():
 
 run_program = True
 clock = pygame.time.Clock()
-maincart = cart(50, WINDOW_HEIGHT - walkleft_pic.get_height() - 130, 50, 50)
+maincart = cart(50, WINDOW_HEIGHT - walkleft_pic.get_height() - 130, 60, 60)
 
-walkCount = 0 
 left, right = False, False
 
 #Main prorgam loop
@@ -149,7 +177,6 @@ while run_program:
         left = False
         right = True
 
-    
     redrawGameWindow()
 
     pygame.display.update()
