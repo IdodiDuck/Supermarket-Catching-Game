@@ -1,11 +1,13 @@
-import pygame, random
+import pygame, random, sys
 
 #Initialize the PyGame library and text
 pygame.init()
 
 pygame.font.init()
 leveltext = pygame.font.SysFont("bahnschrift", 60)
-scoretext = pygame.font.SysFont('bahnschrift', 40)
+scoretext = pygame.font.SysFont("bahnschrift", 40)
+cartx_text = pygame.font.SysFont("bahnschrift", 40)
+foodx_text = pygame.font.SysFont("bahnschrift", 45)
 
 WINDOW_HEIGHT = 750
 WINDOW_WIDTH = 630
@@ -117,6 +119,7 @@ food_tup = (bread, drinks, eggs, meat, veg, milk, goldencandy)
 current_food = random.choice(food_tup)
 current_food_instance = current_food(random.randint(1, WINDOW_WIDTH), current_food.pic.get_height(), False)
 
+cart_height = 421
 #Function which is drawing the images in the game and updates the display in every frame
 def redrawGameWindow():
     global level, score
@@ -124,14 +127,19 @@ def redrawGameWindow():
     screen.blit(background, (0, 0)) #Draws the background
     leveltextTBD = leveltext.render(f'Level: {level}', 1, (0, 0, 0))
     scoretextTBD = scoretext.render(f'Score: {score}', 1, (0, 0, 0))
+    x_textTBD = cartx_text.render(f'{maincart.x}', 1, (0, 0, 0))
+    foodx_textTBD = foodx_text.render(f'{current_food_instance.x}', 1, (0, 0, 0))
+    
 
     screen.blit(leveltextTBD, (2, 0)) #Drawing both texts of Level and Score
     screen.blit(scoretextTBD, (2, 68))
-
+    screen.blit(x_textTBD, (maincart.x, maincart.y + 20, ))
+    screen.blit(foodx_textTBD, (current_food_instance.x, current_food_instance.y + 100))
+    
     if current_food_instance.respawn == False:
         current_food_instance.draw()
-
-    if current_food_instance.y == maincart.y:
+    
+    if current_food_instance.y >= cart_height:
         current_food_instance.y = maincart.y
         current_food_instance.respawn = True
 
