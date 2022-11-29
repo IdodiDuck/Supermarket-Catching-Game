@@ -6,6 +6,7 @@ pygame.init()
 pygame.font.init()
 leveltext = pygame.font.SysFont("bahnschrift", 60)
 scoretext = pygame.font.SysFont("bahnschrift", 40)
+livestext = pygame.font.SysFont("bahnschrift", 45)
 cartx_text = pygame.font.SysFont("bahnschrift", 40)
 foodx_text = pygame.font.SysFont("bahnschrift", 45)
 
@@ -19,6 +20,11 @@ background = pygame.image.load('Game_SuperMarket_Banner.png')
 
 score = 0
 level = 1
+lives = 3
+
+cart_height = 421
+score_flag = True
+lives_flag = True
 
 #Animations pictures for the main-cart object
 walkright_pic = pygame.image.load('ShoppingCartRight.png')
@@ -117,32 +123,49 @@ class goldencandy(object):
 food_tup = (bread, drinks, eggs, meat, veg, milk, goldencandy)
 
 current_food = random.choice(food_tup)
-current_food_instance = current_food(random.randint(1, WINDOW_WIDTH), current_food.pic.get_height(), False)
+current_food_instance = current_food(random.choice(range(10, WINDOW_WIDTH, 10)), current_food.pic.get_height(), False)
 
-cart_height = 421
 #Function which is drawing the images in the game and updates the display in every frame
 def redrawGameWindow():
-    global level, score
+    global level, score, lives, score_flag, lives_flag
 
     screen.blit(background, (0, 0)) #Draws the background
     leveltextTBD = leveltext.render(f'Level: {level}', 1, (0, 0, 0))
     scoretextTBD = scoretext.render(f'Score: {score}', 1, (0, 0, 0))
+    lives_textTBD = livestext.render(f'Lives: {lives}', 1, (139, 0, 0))
     x_textTBD = cartx_text.render(f'{maincart.x}', 1, (0, 0, 0))
     foodx_textTBD = foodx_text.render(f'{current_food_instance.x}', 1, (0, 0, 0))
     
 
     screen.blit(leveltextTBD, (2, 0)) #Drawing both texts of Level and Score
     screen.blit(scoretextTBD, (2, 68))
+    screen.blit(lives_textTBD, (WINDOW_WIDTH - 35, 0))
     screen.blit(x_textTBD, (maincart.x, maincart.y + 20, ))
     screen.blit(foodx_textTBD, (current_food_instance.x, current_food_instance.y + 100))
     
     if current_food_instance.respawn == False:
         current_food_instance.draw()
-    
-    if current_food_instance.y >= cart_height:
-        current_food_instance.y = maincart.y
-        current_food_instance.respawn = True
 
+    if score % 10 == 0 and score != 0:
+        level += 1
+    
+    if current_food_instance.y >= cart_height: # Checks Y
+        if current_food_instance.x <= maincart.x - 50: #Checks X
+            current_food_instance.respawn = True
+
+            if score_flag == True:
+                score += current_food_instance.pts
+                score_flag = False
+        
+        elif current_food_instance.x >= maincart.x - 50:
+            current_food_instance.y += 4
+
+            if current_food_instance.y >= WINDOW_HEIGHT - 175:
+                current_food_instance.draw()
+                if lives_flag == True:
+                    lives -= 1
+                    lives_flag = False
+                
     else:
         current_food_instance.y += 4
         
