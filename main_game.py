@@ -1,4 +1,4 @@
-import pygame, random, sys
+import pygame, random
 
 #Initialize the PyGame library and text
 pygame.init()
@@ -17,14 +17,6 @@ WINDOW_WIDTH = 630
 screen = pygame.display.set_mode((WINDOW_HEIGHT, WINDOW_WIDTH))
 pygame.display.set_caption('Supermarket Game')
 background = pygame.image.load('Game_SuperMarket_Banner.png')
-
-score = 0
-level = 1
-lives = 3
-
-cart_height = 421
-score_flag = True
-lives_flag = True
 
 #Animations pictures for the main-cart object
 walkright_pic = pygame.image.load('ShoppingCartRight.png')
@@ -125,6 +117,15 @@ food_tup = (bread, drinks, eggs, meat, veg, milk, goldencandy)
 current_food = random.choice(food_tup)
 current_food_instance = current_food(random.choice(range(10, WINDOW_WIDTH, 10)), current_food.pic.get_height(), False)
 
+score = 0
+level = 1
+lives = 3
+
+cart_height = 421
+score_flag = True
+lives_flag = True
+level_flag = True
+
 #Function which is drawing the images in the game and updates the display in every frame
 def redrawGameWindow():
     global level, score, lives, score_flag, lives_flag
@@ -136,7 +137,6 @@ def redrawGameWindow():
     x_textTBD = cartx_text.render(f'{maincart.x}', 1, (0, 0, 0))
     foodx_textTBD = foodx_text.render(f'{current_food_instance.x}', 1, (0, 0, 0))
     
-
     screen.blit(leveltextTBD, (2, 0)) #Drawing both texts of Level and Score
     screen.blit(scoretextTBD, (2, 68))
     screen.blit(lives_textTBD, (WINDOW_WIDTH - 35, 0))
@@ -145,19 +145,16 @@ def redrawGameWindow():
     
     if current_food_instance.respawn == False:
         current_food_instance.draw()
-
-    if score % 10 == 0 and score != 0:
-        level += 1
     
     if current_food_instance.y >= cart_height: # Checks Y
-        if current_food_instance.x <= maincart.x - 50: #Checks X
+        if current_food_instance.x <= maincart.x - 50 or current_food_instance.x >= maincart.x + 50: #Checks X
             current_food_instance.respawn = True
 
             if score_flag == True:
                 score += current_food_instance.pts
                 score_flag = False
         
-        elif current_food_instance.x >= maincart.x - 50:
+        else:
             current_food_instance.y += 4
 
             if current_food_instance.y >= WINDOW_HEIGHT - 175:

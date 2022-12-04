@@ -19,10 +19,11 @@ Subjects under...
 ## **My languages:**
 The languages I know are:
 - `Python`
-- `Go/GoLang`
+- `Go`
+- `SQL - (MySQL)`
 - `MarkDown`
-In this project I use only Python and MarkDown
-I use Pygame and Random libraries
+
+## In this project I use only Python and MarkDown, in addition I use Pygame and Random libraries
 ---
 ## *More coming soon...*
 
