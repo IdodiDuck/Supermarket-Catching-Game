@@ -7,8 +7,8 @@ pygame.font.init()
 leveltext = pygame.font.SysFont("bahnschrift", 60)
 scoretext = pygame.font.SysFont("bahnschrift", 40)
 livestext = pygame.font.SysFont("bahnschrift", 45)
-cartx_text = pygame.font.SysFont("bahnschrift", 40)
-foodx_text = pygame.font.SysFont("bahnschrift", 45)
+carty_text = pygame.font.SysFont("bahnschrift", 40)
+foody_text = pygame.font.SysFont("bahnschrift", 45)
 
 WINDOW_HEIGHT = 750
 WINDOW_WIDTH = 630
@@ -111,11 +111,15 @@ class goldencandy(object):
     
     def draw(self):
         screen.blit(goldencandy.pic, (self.x, self.y))
-        
-food_tup = (bread, drinks, eggs, meat, veg, milk, goldencandy)
+  
+def generate_food():
+    food_tup = (bread, drinks, eggs, meat, veg, milk, goldencandy)
 
-current_food = random.choice(food_tup)
-current_food_instance = current_food(random.choice(range(10, WINDOW_WIDTH, 10)), current_food.pic.get_height(), False)
+    current_food = random.choice(food_tup)
+    current_food_instance = current_food(random.choice(range(10, WINDOW_WIDTH, 10)), current_food.pic.get_height(), False)
+    return current_food_instance
+
+current_food_instance = generate_food()
 
 score = 0
 level = 1
@@ -130,25 +134,27 @@ level_flag = True
 def redrawGameWindow():
     global level, score, lives, score_flag, lives_flag
 
+
     screen.blit(background, (0, 0)) #Draws the background
     leveltextTBD = leveltext.render(f'Level: {level}', 1, (0, 0, 0))
     scoretextTBD = scoretext.render(f'Score: {score}', 1, (0, 0, 0))
     lives_textTBD = livestext.render(f'Lives: {lives}', 1, (139, 0, 0))
-    x_textTBD = cartx_text.render(f'{maincart.x}', 1, (0, 0, 0))
-    foodx_textTBD = foodx_text.render(f'{current_food_instance.x}', 1, (0, 0, 0))
+    y_textTBD = carty_text.render(f'{maincart.y}', 1, (0, 0, 0))
+    foody_textTBD = foody_text.render(f'{current_food_instance.y}', 1, (0, 0, 0))
     
     screen.blit(leveltextTBD, (2, 0)) #Drawing both texts of Level and Score
     screen.blit(scoretextTBD, (2, 68))
     screen.blit(lives_textTBD, (WINDOW_WIDTH - 35, 0))
-    screen.blit(x_textTBD, (maincart.x, maincart.y + 20, ))
-    screen.blit(foodx_textTBD, (current_food_instance.x, current_food_instance.y + 100))
+    screen.blit(y_textTBD, (maincart.x, maincart.y + 20, ))
+    screen.blit(foody_textTBD, (current_food_instance.x, current_food_instance.y + 100))
     
     if current_food_instance.respawn == False:
         current_food_instance.draw()
     
-    if current_food_instance.y >= cart_height: # Checks Y
-        if current_food_instance.x <= maincart.x - 50 or current_food_instance.x >= maincart.x + 50: #Checks X
+    if current_food_instance.y >= maincart.y + 25 and current_food_instance.y <= 495: # Checks Y
+        if current_food_instance.x in range(maincart.x - 90, maincart.x + 90): #Checks X
             current_food_instance.respawn = True
+            generate_food()
 
             if score_flag == True:
                 score += current_food_instance.pts
@@ -157,11 +163,15 @@ def redrawGameWindow():
         else:
             current_food_instance.y += 4
 
-            if current_food_instance.y >= WINDOW_HEIGHT - 175:
-                current_food_instance.draw()
-                if lives_flag == True:
-                    lives -= 1
-                    lives_flag = False
+    if current_food_instance.y >= 510:
+        current_food_instance.draw()
+        if lives_flag == True:
+            lives -= 1
+            lives_flag = False
+            current_food_instance.respawn = True
+            generate_food()
+
+        current_food_instance.y += 4
                 
     else:
         current_food_instance.y += 4
@@ -192,6 +202,7 @@ while run_program:
         if event.type == pygame.QUIT:
             run_program = False
             print('Window closed by the user')
+            print(WINDOW_HEIGHT)
 
     KEYS = pygame.key.get_pressed()
 
