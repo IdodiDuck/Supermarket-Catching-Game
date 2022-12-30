@@ -7,7 +7,6 @@ pygame.font.init()
 leveltext = pygame.font.SysFont("bahnschrift", 60)
 scoretext = pygame.font.SysFont("bahnschrift", 40)
 livestext = pygame.font.SysFont("bahnschrift", 45)
-carty_text = pygame.font.SysFont("bahnschrift", 40)
 foody_text = pygame.font.SysFont("bahnschrift", 45)
 
 WINDOW_HEIGHT = 750
@@ -28,12 +27,12 @@ class cart(object):
     Main Cart, the object that the user controls. The cart should catch the falling food items before they reach the floor
     Cart inherits from the class object
     '''
-    def __init__(self, x, y, width, height): #Attributes of the cart
+    def __init__(self, x, y, width, height, vel): #Attributes of the cart
         self.x = x
         self.y = y
         self.width = width
         self.height = height
-        self.vel = 20
+        self.vel = vel
 
 class bread(object):
     pic = pygame.image.load('Bread_Obj.png')
@@ -42,6 +41,7 @@ class bread(object):
         self.y = y
         self.respawn = respawn
         self.pts = 5
+        self.vel = 1
     
     def draw(self):
         screen.blit(bread.pic, (self.x, self.y))
@@ -53,6 +53,7 @@ class drinks(object):
         self.y = y
         self.respawn = respawn
         self.pts = 10
+        self.vel = 1
 
     def draw(self):
         screen.blit(drinks.pic, (self.x, self.y))
@@ -64,6 +65,7 @@ class eggs(object):
         self.y = y
         self.respawn = respawn
         self.pts = 5
+        self.vel = 1
 
     def draw(self):
         screen.blit(eggs.pic, (self.x, self.y))
@@ -75,6 +77,7 @@ class milk(object):
         self.y = y
         self.respawn = respawn
         self.pts = 5
+        self.vel = 1
 
     def draw(self):
         screen.blit(milk.pic, (self.x, self.y))
@@ -86,6 +89,7 @@ class veg(object):
         self.y = y
         self.respawn = respawn
         self.pts = 5
+        self.vel = 1
 
     def draw(self):
         screen.blit(veg.pic, (self.x, self.y))
@@ -97,6 +101,7 @@ class meat(object):
         self.y = y
         self.respawn = respawn
         self.pts = 10
+        self.vel = 1
 
     def draw(self):
         screen.blit(meat.pic, (self.x, self.y))
@@ -108,7 +113,9 @@ class goldencandy(object):
         self.y = y
         self.respawn = respawn
         self.pts = 100
-    
+        self.vel = 1
+        
+
     def draw(self):
         screen.blit(goldencandy.pic, (self.x, self.y))
   
@@ -124,57 +131,48 @@ current_food_instance = generate_food()
 score = 0
 level = 1
 lives = 3
+level_requirement = 10
 
 cart_height = 421
-score_flag = True
-lives_flag = True
-level_flag = True
 
 #Function which is drawing the images in the game and updates the display in every frame
 def redrawGameWindow():
-    global level, score, lives, score_flag, lives_flag
-
+    global screen, level, score, lives, level_requirement, current_food_instance
 
     screen.blit(background, (0, 0)) #Draws the background
     leveltextTBD = leveltext.render(f'Level: {level}', 1, (0, 0, 0))
     scoretextTBD = scoretext.render(f'Score: {score}', 1, (0, 0, 0))
     lives_textTBD = livestext.render(f'Lives: {lives}', 1, (139, 0, 0))
-    y_textTBD = carty_text.render(f'{maincart.y}', 1, (0, 0, 0))
-    foody_textTBD = foody_text.render(f'{current_food_instance.y}', 1, (0, 0, 0))
     
     screen.blit(leveltextTBD, (2, 0)) #Drawing both texts of Level and Score
     screen.blit(scoretextTBD, (2, 68))
     screen.blit(lives_textTBD, (WINDOW_WIDTH - 35, 0))
-    screen.blit(y_textTBD, (maincart.x, maincart.y + 20, ))
-    screen.blit(foody_textTBD, (current_food_instance.x, current_food_instance.y + 100))
     
     if current_food_instance.respawn == False:
         current_food_instance.draw()
     
     if current_food_instance.y >= maincart.y + 25 and current_food_instance.y <= 495: # Checks Y
         if current_food_instance.x in range(maincart.x - 90, maincart.x + 90): #Checks X
-            current_food_instance.respawn = True
-            generate_food()
+            score += current_food_instance.pts
 
-            if score_flag == True:
-                score += current_food_instance.pts
-                score_flag = False
-        
+            if score >= level_requirement:
+                level += 1
+                current_food_instance.vel *= 10
+
+                level_requirement += 10
+
+            current_food_instance = generate_food()
+
         else:
-            current_food_instance.y += 4
+            current_food_instance.y += 4 * current_food_instance.vel
 
-    if current_food_instance.y >= 510:
-        current_food_instance.draw()
-        if lives_flag == True:
-            lives -= 1
-            lives_flag = False
-            current_food_instance.respawn = True
-            generate_food()
-
-        current_food_instance.y += 4
-                
+    elif current_food_instance.y >= 510:
+        # current_food_instance.draw()
+        lives -= 1
+        current_food_instance.respawn = True
+        current_food_instance = generate_food()
     else:
-        current_food_instance.y += 4
+        current_food_instance.y += 4 * current_food_instance.vel
         
     if left:
         screen.blit(walkleft_pic, (maincart.x, maincart.y))
@@ -189,7 +187,7 @@ def redrawGameWindow():
 
 run_program = True
 clock = pygame.time.Clock()
-maincart = cart(50, WINDOW_HEIGHT - walkleft_pic.get_height() - 130, 60, 60)
+maincart = cart(50, WINDOW_HEIGHT - walkleft_pic.get_height() - 130, 60, 60, 20)
 
 left, right = False, False
 
@@ -201,8 +199,11 @@ while run_program:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run_program = False
-            print('Window closed by the user')
-            print(WINDOW_HEIGHT)
+            print('WINDOW CLOSED BY THE USER')
+
+    if lives == 0:
+        print("GAME OVER!")
+        run_program = False
 
     KEYS = pygame.key.get_pressed()
 
