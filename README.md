@@ -22,8 +22,8 @@ Move the maincart of the game by using the right and left arrow keys/buttons in 
 
 ---
 ## **About me:**
-``My name is Ido, I'm a Programming & Computers Sciencesenthusaistic``
-```For any communicationwith me , here's my discord --> IdoRedid123#7761```
+``My name is Ido, I'm a Programming & Computers Sciences enthusaistic``
+```For any communication with me , here's my discord --> IdoRedid123#7761```
 ---
 ---
 ## **My languages:**
